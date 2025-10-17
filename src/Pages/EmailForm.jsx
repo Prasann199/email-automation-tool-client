@@ -47,7 +47,7 @@ export default function EmailForm() {
       const res = await axios.post(`${backendUrl}/api/email/send`, form, {
         // allow axios to set Content-Type with boundary automatically
       });
-
+      console.log(res.data.message)
       const text = res && res.data && (res.data.message || JSON.stringify(res.data)) || "Emails sent";
       setStatus({ type: "success", text });
     } catch (err) {
