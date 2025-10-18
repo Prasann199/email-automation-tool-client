@@ -43,8 +43,8 @@ export default function EmailForm() {
       form.append("subject", subject);
       form.append("message", message); // HTML from editor or plain text
       if (resumeFile) form.append("file", resumeFile, resumeFile.name);
-        const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-      const res = await axios.post(`${REACT_APP_BACKEND_URL}/api/email/send`, form, {
+        const backendUrl = process.env.VITE_BACKEND_URL || 'http://localhost:8080';
+      const res = await axios.post(`${backendUrl}/api/email/send`, form, {
         // allow axios to set Content-Type with boundary automatically
       });
       console.log(res.data)
