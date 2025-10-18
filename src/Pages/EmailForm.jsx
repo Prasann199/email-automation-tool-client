@@ -43,7 +43,23 @@ export default function EmailForm() {
       form.append("subject", subject);
       form.append("message", message); // HTML from editor or plain text
       if (resumeFile) form.append("file", resumeFile, resumeFile.name);
-        const backendUrl = process.env.VITE_BACKEND_URL
+
+      // Prefer Vite env var, fall back to CRA-style REACT_APP var if present.
+      const viteUrl = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_BACKEND_URL)
+        ? String(import.meta.env.VITE_BACKEND_URL).trim()
+        : null;
+      const reactAppUrl = process.env.REACT_APP_BACKEND_URL ? String(process.env.REACT_APP_BACKEND_URL).trim() : null;
+
+      // Normalize (remove trailing slash) to avoid accidental '//' or '/undefined' segments.
+      const normalize = (u) => (u ? u.replace(/\/+$/, '') : u);
+
+      const backendUrl = normalize(viteUrl) || normalize(reactAppUrl) || null;
+
+      if (!backendUrl) {
+        // Helpful runtime message for debugging — do not silently use localhost unless explicitly desired.
+        throw new Error('No backend URL configured. Set VITE_BACKEND_URL (or REACT_APP_BACKEND_URL) in your environment.');
+      }
+
       const res = await axios.post(`${backendUrl}/api/email/send`, form, {
         // allow axios to set Content-Type with boundary automatically
       });
