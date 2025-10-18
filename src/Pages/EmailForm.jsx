@@ -43,11 +43,11 @@ export default function EmailForm() {
       form.append("subject", subject);
       form.append("message", message); // HTML from editor or plain text
       if (resumeFile) form.append("file", resumeFile, resumeFile.name);
-        const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const res = await axios.post(`${backendUrl}/api/email/send`, form, {
+        const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+      const res = await axios.post(`${REACT_APP_BACKEND_URL}/api/email/send`, form, {
         // allow axios to set Content-Type with boundary automatically
       });
-      console.log(res.data.message)
+      console.log(res.data)
       const text = res && res.data && (res.data.message || JSON.stringify(res.data)) || "Emails sent";
       setStatus({ type: "success", text });
     } catch (err) {
